@@ -1,0 +1,39 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  hashedPassword String
+  createdAt      DateTime       @default(now())
+  sessions       Session[]
+  loginHistories LoginHistory[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String   // 追加：どのデバイスか
+  ipAddress String   // 追加：どこからか
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent String   // 追加：どのデバイスか
+  ipAddress String   // 追加：どこからか
+  status    String   // "SUCCESS" もしくは "FAILED"
+  createdAt DateTime @default(now())
+}
