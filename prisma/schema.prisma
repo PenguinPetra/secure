@@ -31,7 +31,7 @@ model Session {
 model LoginHistory {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userAgent String   // 追加：どのデバイスか
   ipAddress String   // 追加：どこからか
   status    String   // "SUCCESS" もしくは "FAILED"
