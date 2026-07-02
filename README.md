@@ -46,8 +46,8 @@
 </table>
 
 ### ③ 防御：Bot・ブルートフォース攻撃対策
-*   **CAPTCHA**: HMAC署名を用いた計算クイズ。Botによる自動送信を物理的に遮断します。(左のスクリーンショット)
-*   **レートリミット（ログイン試行制限）**: 同一IPからの失敗が15分以内に5回に達した場合、アクセスを一時ロックします。(右のスクリーンショット)
+*   **CAPTCHA**: HMAC署名を用いた計算クイズ。Botによる自動送信を物理的に遮断します。(左図のスクリーンショット)
+*   **レートリミット（ログイン試行制限）**: 同一IPからの失敗が15分以内に5回に達した場合、アクセスを一時ロックします。(右図のスクリーンショット)
 
 <table>
   <tr>
@@ -61,21 +61,23 @@
 
 <table>
   <tr>
-    <td><img src="images/m.png" width="700"></td>
+    <td><img src="images/m.png" width="1200"></td>
   </tr>
 </table>
 
 ---
 
 ## 4. セキュリティ上の工夫（ガチガチな設計）
-*   **パスワードのハッシュ化**: **bcrypt** を使用し、ソルト付きハッシュとして保存。万一のDB漏洩時も元のパスワードは解読不能です。(左のスクリーンショット)
-*   **セキュアCookie属性**: **httpOnly**, **secure**, **sameSite: "strict"** を設定。XSSによるトークン窃取やCSRF攻撃を強力に防止します。(右のスクリーンショット)
+*   **パスワードのハッシュ化**: **bcrypt** を使用し、ソルト付きハッシュとして保存。万一のDB漏洩時も元のパスワードは解読不能です。(上図のスクリーンショット)
+*   **セキュアCookie属性**: **httpOnly**, **secure**, **sameSite: "strict"** を設定。XSSによるトークン窃取やCSRF攻撃を強力に防止します。(下図のスクリーンショット)
 *   **厳格なCSP設定**: `next.config.ts` にて **Content Security Policy** を定義し、不正な外部リソース読み込みをブラウザレベルで制限しています。
 
 <table>
   <tr>
-    <td><img src="images/l.png" width="600"></td>
-    <td><img src="images/n.png" width="800"></td>
+    <td><img src="images/l.png" width="1000"></td>
+　</tr>
+  <tr>
+    <td><img src="images/n.png" width="1200"></td>
   </tr>
 </table>
 
