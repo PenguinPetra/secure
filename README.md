@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+セキュア認証アプリケーション 
+1. プロジェクト概要
+本プロジェクトは、Next.js 15 を使用した「ガチガチにセキュアな設計」のセッションベース認証アプリケーションです。 
+教材のコードを流用せず、一からスクラッチで構築することで、減点対象となる「ニュース」や「ショップ」に関連する不要なコードを一切排除したクリーンな環境を実現しました。
+2. 実行環境・技術スタック
+フレームワーク: Next.js 15 (App Router / TypeScript)
+データベース: SQLite (Prisma 6系)
+認証方式: セッションベース認証 (Cookie管理)
+主要ライブラリ:
+- bcrypt: パスワードの安全なハッシュ化
+- swr: CAPTCHAデータの効率的な取得と更新（連鎖レンダリング防止）
+- lucide-react: セキュリティ意識を高める視覚的UIアイコン
+3. 実装した独自機能
+教材にはない、認証・認可に関する以下の独自機能を実装しました。
+① 予防：高度なサインアップUI
+パスワード強度判定 & リアルタイムアドバイス: 長さ（8文字以上必須）と文字種（大文字・数字・記号）を評価。脆弱な場合は登録をブロックし、具体的な改善アドバイスを表示します。
+パスワード表示切り替え: 入力ミスを防ぐため、目のアイコンで平文と伏せ字を切り替え可能です。
+確認用パスワード要求: 2回の入力一致を必須とし、ヒューマンエラーによるロックアウトを防止します。
+② 監視：セキュリティダッシュボード
+詳細なログイン履歴: ログインの成功・失敗に加え、**IPアドレス（IPv6/IPv4）およびUser-Agent（OS・ブラウザ情報）**をDBに記録。ユーザー自身が不審なアクセスを検知できます。
+③ 制御：アクティブセッション管理
+遠隔ログアウト機能: 現在ログイン中のデバイス一覧を表示。古いセッションや、別の端末からのログインを個別に強制終了（DBから削除）できます。
+④ 防御：Bot・ブルートフォース攻撃対策
+自前実装のCAPTCHA: HMAC署名を用いた計算クイズ。Botによる自動送信を物理的に遮断します。
+レートリミット（ログイン試行制限）: 同一IPからの失敗が15分以内に5回に達した場合、アクセスを一時ロックします。
+4. セキュリティ上の工夫（ガチガチな設計）
+パスワードのハッシュ化: bcrypt を使用し、ソルト付きハッシュとして保存。万一のDB漏洩時も元のパスワードは解読不能です。
+セキュアCookie属性: httpOnly, secure, sameSite: "strict" を設定。XSSによるトークン窃取やCSRF攻撃を防止します。
+厳格なCSP設定: next.config.ts にて Content Security Policy を定義し、不正な外部リソース読み込みを制限しています。
+5. エビデンス（動作確認画像）
+※以下の5枚以上の画像を貼り付けてください
+,
+。
+パスワード強度警告: 8文字未満や「0326」等の脆弱な入力で警告が出るサインアップ画面。
+CAPTCHA表示: 計算クイズが表示されているログイン画面。
+セキュリティダッシュボード: 「SUCCESS」と「FAILED」が並ぶ履歴一覧。
+アクティブセッション一覧: 「このデバイス」と「遠隔ログアウトボタン」が表示された画面
+。
+Prisma Studioの画面: User テーブルの hashedPassword が $2b$10$... とハッシュ化されている証拠画像。
